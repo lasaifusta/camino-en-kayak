@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reserva online — Camino en Kayak (demostración)</title>
+<style>
+  :root{
+    --navy:#143257;--navy-2:#1f4775;--aqua:#16a6b8;--aqua-d:#0f7e8c;
+    --yellow:#f4c20d;--yellow-soft:#fdf3cf;--green:#2f8a52;--green-soft:#e6f4ec;
+    --cream:#fdf8ee;--sand:#efe2c9;
+    --ink:#1b2733;--muted:#637180;--line:#e7ecf2;--paper:#e9f1f3;--card:#fff;--red:#c0492f;
+    --sea-grad:linear-gradient(135deg,#16a6b8,#0f7e8c);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--ink);
+    background:radial-gradient(120% 80% at 50% 0%, #e3f1f3 0%, #e9eef3 60%, #e7ebf1 100%);
+    line-height:1.55;-webkit-font-smoothing:antialiased;
+    display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:20px 12px 44px}
+
+  .demo-note{max-width:448px;width:100%;font-size:12px;color:var(--muted);text-align:center;margin-bottom:11px;
+    display:flex;align-items:center;justify-content:center;gap:7px}
+  .demo-note b{color:var(--navy)}
+  .demo-note .dot{width:7px;height:7px;border-radius:50%;background:var(--aqua);display:inline-block}
+
+  .phone{max-width:448px;width:100%;background:var(--card);border-radius:26px;overflow:hidden;
+    box-shadow:0 26px 60px rgba(20,50,87,.22);border:1px solid rgba(255,255,255,.6)}
+
+  /* hero header with photo */
+  .head{position:relative;height:172px;display:flex;flex-direction:column;justify-content:flex-end;
+    padding:18px;color:#fff;
+    background:linear-gradient(180deg,rgba(20,50,87,.10) 0%,rgba(20,50,87,.78) 100%),
+      url('https://static.wixstatic.com/media/bc11fe_a0197781ce7d401fbe482f7ff23eee91~mv2.jpeg/v1/fill/w_900,h_500,al_c,q_85,enc_avif,quality_auto/foto%20aerea%20miki%203.jpeg'),
+      var(--sea-grad);
+    background-size:cover;background-position:center}
+  .head .brand{display:flex;align-items:center;gap:11px}
+  .head .name{font-weight:800;font-size:17px;letter-spacing:.2px;text-shadow:0 1px 8px rgba(0,0,0,.35)}
+  .head .name span{display:block;font-size:11.5px;color:#e9f3f5;font-weight:500;letter-spacing:.3px;text-shadow:0 1px 6px rgba(0,0,0,.4)}
+  .head .ribbon{position:absolute;top:14px;left:14px;background:rgba(244,194,13,.95);color:#4a3a05;
+    font-size:10.5px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;padding:4px 11px;border-radius:999px}
+
+  .progbar{background:var(--navy);display:flex;gap:6px;padding:11px 18px}
+  .progbar .b{flex:1;height:4px;border-radius:2px;background:rgba(255,255,255,.20);transition:background .25s}
+  .progbar .b.on{background:var(--yellow)}
+
+  .screen{padding:20px 18px 22px;display:none}
+  .screen.active{display:block;animation:fade .28s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .step-label{font-size:11px;text-transform:uppercase;letter-spacing:.9px;color:var(--aqua-d);font-weight:800;margin-bottom:4px}
+  h2.t{font-size:21px;margin:0 0 16px;color:var(--navy);letter-spacing:-.2px}
+
+  .back{display:inline-flex;align-items:center;gap:6px;background:none;border:0;color:var(--muted);
+    font-size:13px;cursor:pointer;padding:0;margin-bottom:12px;font-family:inherit}
+
+  /* option cards with photo thumb */
+  .opt{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--card);
+    border:1px solid var(--line);border-radius:16px;padding:11px;margin-bottom:12px;cursor:pointer;
+    font-family:inherit;transition:transform .14s,border-color .14s,box-shadow .14s}
+  .opt:hover,.opt:focus{border-color:var(--aqua);box-shadow:0 10px 24px rgba(16,126,140,.16);transform:translateY(-1px);outline:none}
+  .opt .thumb{flex:0 0 auto;width:68px;height:68px;border-radius:13px;background-size:cover;background-position:center;
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.05)}
+  .opt .info{flex:1;min-width:0}
+  .opt .info .n{display:block;font-weight:700;font-size:15.5px;color:var(--ink);line-height:1.25}
+  .opt .info .s{display:block;font-size:12.5px;color:var(--muted);margin-top:3px}
+  .opt .info .pr{display:block;font-size:13px;color:var(--navy);font-weight:700;margin-top:4px}
+  .opt .info .pr em{font-style:normal;color:var(--muted);font-weight:500;font-size:11.5px}
+  .opt .chev{flex:0 0 auto;color:#c2ccd6}
+  .opt.soft{opacity:.55;cursor:not-allowed;filter:grayscale(.4)}
+  .opt .full{flex:0 0 auto;font-size:10.5px;font-weight:800;color:var(--red);background:#fbe9e4;padding:4px 9px;border-radius:999px}
+
+  /* date cards */
+  .dcard .thumb{width:52px;height:52px;border-radius:11px;background:var(--sea-grad);display:flex;align-items:center;justify-content:center}
+  .dcard .info .n{font-size:15px}
+
+  .hint{display:flex;gap:9px;align-items:flex-start;background:#e7f4f6;border:1px solid #cde8ec;border-radius:12px;
+    padding:11px 13px;font-size:12.7px;color:#235a62;margin:2px 0 16px}
+  .hint svg{flex:0 0 auto;margin-top:1px}
+  .hint b{color:var(--aqua-d)}
+
+  /* form */
+  label.fl{display:block;font-size:12.5px;font-weight:700;color:var(--navy);margin:14px 0 5px}
+  input.fi{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:11px;font-size:14px;font-family:inherit;background:#fbfcfe}
+  input.fi:focus{border-color:var(--aqua);outline:none;background:#fff}
+  .stepper{display:flex;align-items:center;gap:16px}
+  .stepper button{width:40px;height:40px;border-radius:11px;border:1px solid var(--line);background:#fff;
+    font-size:21px;color:var(--navy);cursor:pointer;font-family:inherit;line-height:1;transition:border-color .14s}
+  .stepper button:hover{border-color:var(--aqua)}
+  .stepper .val{font-size:19px;font-weight:800;min-width:28px;text-align:center;color:var(--navy)}
+  .chk{display:flex;gap:11px;align-items:flex-start;margin-top:15px;font-size:13px;color:var(--ink)}
+  .chk input{margin-top:3px;width:18px;height:18px;flex:0 0 auto;accent-color:var(--aqua)}
+
+  /* summary / payment */
+  .sum{background:linear-gradient(180deg,#f6fafb,#eef5f6);border:1px solid #dfeaec;border-radius:15px;padding:15px 17px;margin-bottom:14px}
+  .sum .r{display:flex;justify-content:space-between;gap:12px;font-size:13.5px;padding:5px 0}
+  .sum .r .l{color:var(--muted)}
+  .sum .r.tot{border-top:1px solid #dbe6e8;margin-top:6px;padding-top:10px;font-size:14px}
+  .sum .r.dep{margin-top:6px;padding-top:10px;border-top:1px dashed #cfdee0;font-weight:800;color:var(--aqua-d);font-size:17px}
+  .sum .r.dep .l{color:var(--aqua-d)}
+  .rest{font-size:12.5px;color:var(--muted);text-align:center;margin:-4px 0 0}
+
+  .cta{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;background:var(--navy);color:#fff;border:0;
+    border-radius:13px;padding:15px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:6px;
+    transition:background .15s,transform .1s;box-shadow:0 8px 20px rgba(20,50,87,.20)}
+  .cta:hover{background:var(--navy-2)}
+  .cta:active{transform:translateY(1px)}
+  .cta.pay{background:linear-gradient(135deg,#2f8a52,#247a44);box-shadow:0 8px 20px rgba(36,122,68,.26)}
+
+  /* confirmation */
+  .okbanner{height:128px;background:linear-gradient(180deg,rgba(20,50,87,.05),rgba(20,50,87,.35)),
+      url('https://static.wixstatic.com/media/bc11fe_f8b00bd0bce24c6d93aedb4338ae0c0c~mv2.jpg/v1/fill/w_900,h_360,al_c,q_85,enc_avif,quality_auto/Paisaxe02.jpg'),
+      var(--sea-grad);background-size:cover;background-position:center;position:relative}
+  .okbanner .circle{position:absolute;left:50%;bottom:-30px;transform:translateX(-50%);
+    width:64px;height:64px;border-radius:50%;background:#fff;box-shadow:0 8px 22px rgba(20,50,87,.22);
+    display:flex;align-items:center;justify-content:center}
+  .ok{text-align:center;padding:44px 20px 24px}
+  .ok h2{color:var(--navy);font-size:22px;margin:0 0 7px}
+  .ok p{color:var(--muted);font-size:13.8px;margin:0 auto 16px;max-width:300px}
+  .restart{background:none;border:0;color:var(--aqua-d);font-size:13px;cursor:pointer;font-family:inherit;margin-top:10px;text-decoration:underline;font-weight:600}
+
+  .foot{max-width:448px;width:100%;text-align:center;color:var(--muted);font-size:11.5px;margin-top:16px}
+  .foot b{color:var(--ink)}
+</style>
+</head>
+<body>
+
+  <div class="demo-note"><span class="dot"></span><span><b>Demostración</b> — así reservaría un cliente. Fotos y precios de ejemplo; no se cobra nada.</span></div>
+
+  <div class="phone">
+    <!-- HERO -->
+    <div class="head">
+      <span class="ribbon">Reserva online</span>
+      <div class="brand">
+        <svg width="36" height="36" viewBox="0 0 100 100" aria-hidden="true">
+          <g fill="none" stroke="#f4c20d" stroke-width="4.2" stroke-linecap="round">
+            <path d="M50 86 C50 60 50 40 50 26"/><path d="M50 86 C38 60 30 42 24 30"/>
+            <path d="M50 86 C28 62 18 46 12 36"/><path d="M50 86 C62 60 70 42 76 30"/>
+            <path d="M50 86 C72 62 82 46 88 36"/>
+          </g>
+          <path d="M50 24 C32 24 16 31 12 36 C30 30 70 30 88 36 C84 31 68 24 50 24Z" fill="#f4c20d"/>
+        </svg>
+        <div class="name">Camino en Kayak<span>Rías Baixas · O Grove</span></div>
+      </div>
+    </div>
+    <div class="progbar">
+      <div class="b on" id="p1"></div><div class="b" id="p2"></div>
+      <div class="b" id="p3"></div><div class="b" id="p4"></div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="screen active" id="s1">
+      <div class="step-label">Paso 1 de 4</div>
+      <h2 class="t">¿Qué quieres vivir?</h2>
+      <div id="acts"></div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="screen" id="s2">
+      <button class="back" onclick="go(1)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="#637180" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Volver</button>
+      <div class="step-label">Paso 2 de 4</div>
+      <h2 class="t">Elige el día</h2>
+      <div class="hint">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#0f7e8c" stroke-width="1.6"/><path d="M12 7v5l3 2" stroke="#0f7e8c" stroke-width="1.6" stroke-linecap="round"/></svg>
+        Las reservas se cierran <b>24&nbsp;h antes</b> de la salida. Solo verás los días con plazas libres.
+      </div>
+      <div id="dates"></div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="screen" id="s3">
+      <button class="back" onclick="go(2)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="#637180" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Volver</button>
+      <div class="step-label">Paso 3 de 4</div>
+      <h2 class="t">¿Quién viene?</h2>
+
+      <label class="fl" id="cantLbl">Nº de personas</label>
+      <div class="stepper">
+        <button onclick="cant(-1)" aria-label="menos">&minus;</button>
+        <span class="val" id="cantVal">1</span>
+        <button onclick="cant(1)" aria-label="más">+</button>
+      </div>
+
+      <label class="fl">Nombre y apellidos</label>
+      <input class="fi" id="fNombre" placeholder="Tu nombre">
+      <label class="fl">Teléfono</label>
+      <input class="fi" id="fTel" placeholder="600 000 000" inputmode="tel">
+      <label class="fl">Correo</label>
+      <input class="fi" id="fMail" placeholder="tu@correo.com" inputmode="email">
+
+      <div class="chk">
+        <input type="checkbox" id="cAviso">
+        <label for="cAviso">He leído las recomendaciones: protección solar, agua, ropa de cambio y calzado que se pueda mojar.</label>
+      </div>
+      <div class="chk">
+        <input type="checkbox" id="cMenores">
+        <label for="cMenores">Vienen menores en el grupo (os avisamos de las salidas recomendadas para peques).</label>
+      </div>
+
+      <button class="cta" style="margin-top:20px" onclick="toPay()">Continuar</button>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="screen" id="s4">
+      <button class="back" onclick="go(3)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="#637180" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Volver</button>
+      <div class="step-label">Paso 4 de 4</div>
+      <h2 class="t">Confirma y deja la señal</h2>
+      <div class="sum" id="sum"></div>
+      <p class="rest" id="rest"></p>
+      <button class="cta pay" onclick="go(5)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="12" rx="2" stroke="#fff" stroke-width="1.8"/><path d="M3 10h18" stroke="#fff" stroke-width="1.8"/></svg>
+        Pagar la señal
+      </button>
+      <p class="rest" style="margin-top:11px">Pago seguro. El resto lo abonas el día de la actividad.</p>
+    </div>
+
+    <!-- CONFIRMACIÓN -->
+    <div class="screen" id="s5">
+      <div class="okbanner">
+        <div class="circle">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#2f8a52" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+      <div class="ok">
+        <h2>¡Plaza reservada!</h2>
+        <p id="okText">Te hemos enviado la confirmación por correo. ¡Nos vemos en el agua!</p>
+        <div class="sum" id="sumOk" style="text-align:left"></div>
+        <button class="restart" onclick="reset()">Hacer otra reserva</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot"><b>Camino en Kayak</b> · prototipo de reserva · preparado por Eneko Navarrete · enekodevs.com</div>
+
+<script>
+  const W = (id,w,h,name)=>`https://static.wixstatic.com/media/${id}/v1/fill/w_${w},h_${h},al_c,q_82,enc_avif,quality_auto/${name}`;
+  const ACTS = [
+    {id:'areoso', n:'Ruta Islote de Areoso', s:'Media jornada · Illa de Arousa', precio:45, unidad:'persona', dep:0.20,
+      img:W('bc11fe_00166cec240a455985f6463059700b0a~mv2.jpg',240,240,'20200718_143809.jpg')},
+    {id:'lanzada', n:'Ermita da Lanzada & Montalbo', s:'3 horas · Sanxenxo', precio:35, unidad:'persona', dep:0.20,
+      img:W('bc11fe_21bde39fdb324edcaa85dd002b17f212~mv2.jpg',240,240,'Ermita%20de%20la%20lanzada.jpg')},
+    {id:'camino', n:'Camino de Santiago en kayak', s:'6 días y 5 noches', precio:750, unidad:'persona', dep:0.20,
+      img:W('bc11fe_a0197781ce7d401fbe482f7ff23eee91~mv2.jpeg',240,240,'foto%20aerea%20miki%203.jpeg')},
+    {id:'alquiler', n:'Alquiler de kayak', s:'2 horas · Playa de Area Grande', precio:15, unidad:'kayak', dep:0.50,
+      img:W('bc11fe_f8b00bd0bce24c6d93aedb4338ae0c0c~mv2.jpg',240,240,'Paisaxe02.jpg')}
+  ];
+  const DATES = [
+    {t:'Sábado 4 julio · 10:00', libres:6},
+    {t:'Domingo 5 julio · 10:00', libres:2},
+    {t:'Sábado 11 julio · 10:00', libres:0},
+    {t:'Domingo 12 julio · 16:00', libres:8}
+  ];
+
+  const state = {act:null, date:null, cant:1};
+  const euros = n => n.toLocaleString('es-ES',{minimumFractionDigits:0}) + ' €';
+
+  function go(step){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById('s'+step).classList.add('active');
+    for(let i=1;i<=4;i++){ document.getElementById('p'+i).classList.toggle('on', i<=Math.min(step,4)); }
+    if(step===4) renderSum();
+    if(step===5) renderOk();
+    document.querySelector('.phone').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  // Step 1
+  const actsEl = document.getElementById('acts');
+  ACTS.forEach(a=>{
+    const b=document.createElement('button');
+    b.className='opt';
+    b.innerHTML = `<span class="thumb" style="background-image:url('${a.img}'),linear-gradient(135deg,#16a6b8,#0f7e8c)"></span>
+      <span class="info"><span class="n">${a.n}</span><span class="s">${a.s}</span>
+        <span class="pr">${euros(a.precio)} <em>/ ${a.unidad}</em></span></span>
+      <span class="chev"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#c2ccd6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;
+    b.onclick=()=>{ state.act=a; state.cant=1;
+      document.getElementById('cantVal').textContent='1';
+      document.getElementById('cantLbl').textContent = a.unidad==='kayak'?'Nº de kayaks':'Nº de personas';
+      renderDates(); go(2); };
+    actsEl.appendChild(b);
+  });
+
+  // Step 2
+  function renderDates(){
+    const el=document.getElementById('dates'); el.innerHTML='';
+    DATES.forEach(d=>{
+      const full = d.libres===0;
+      const b=document.createElement('button');
+      b.className='opt dcard'+(full?' soft':'');
+      b.innerHTML = `<span class="thumb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="15" rx="2.5" stroke="#fff" stroke-width="1.7"/><path d="M3.5 9h17M8 3.5v3M16 3.5v3" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+        <span class="info"><span class="n">${d.t}</span><span class="s">${full?'Sin plazas':d.libres+' plazas libres'}</span></span>
+        ${full?'<span class="full">Completo</span>':'<span class="chev"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#c2ccd6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'}`;
+      if(!full){ b.onclick=()=>{ state.date=d; go(3); }; }
+      el.appendChild(b);
+    });
+  }
+
+  // Step 3
+  function cant(d){
+    const max = state.date ? state.date.libres : 8;
+    state.cant = Math.max(1, Math.min(max, state.cant+d));
+    document.getElementById('cantVal').textContent = state.cant;
+  }
+  function toPay(){ go(4); }
+
+  // Step 4
+  function renderSum(){
+    const a=state.act, total=a.precio*state.cant, dep=Math.round(total*a.dep), resto=total-dep;
+    const ud = a.unidad==='kayak' ? (state.cant>1?'kayaks':'kayak') : (state.cant>1?'personas':'persona');
+    document.getElementById('sum').innerHTML =
+      `<div class="r"><span class="l">Actividad</span><span>${a.n}</span></div>
+       <div class="r"><span class="l">Día</span><span>${state.date.t}</span></div>
+       <div class="r"><span class="l">${a.unidad==='kayak'?'Kayaks':'Personas'}</span><span>${state.cant} ${ud}</span></div>
+       <div class="r tot"><span class="l">Total actividad</span><span>${euros(total)}</span></div>
+       <div class="r dep"><span class="l">Señal ahora (${Math.round(a.dep*100)}%)</span><span>${euros(dep)}</span></div>`;
+    document.getElementById('rest').textContent = `Resto a pagar el día de la actividad: ${euros(resto)}`;
+  }
+
+  // Confirmación
+  function renderOk(){
+    const a=state.act, total=a.precio*state.cant, dep=Math.round(total*a.dep), resto=total-dep;
+    const nombre = (document.getElementById('fNombre').value||'').trim();
+    document.getElementById('okText').textContent =
+      (nombre?nombre+', t':'T') + 'e hemos enviado la confirmación por correo. ¡Nos vemos en el agua!';
+    document.getElementById('sumOk').innerHTML =
+      `<div class="r"><span class="l">Actividad</span><span>${a.n}</span></div>
+       <div class="r"><span class="l">Día</span><span>${state.date.t}</span></div>
+       <div class="r"><span class="l">Señal pagada</span><span>${euros(dep)}</span></div>
+       <div class="r"><span class="l">Resto el día</span><span>${euros(resto)}</span></div>`;
+  }
+
+  function reset(){
+    state.act=null; state.date=null; state.cant=1;
+    ['fNombre','fTel','fMail'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('cAviso').checked=false;
+    document.getElementById('cMenores').checked=false;
+    go(1);
+  }
+</script>
+</body>
+</html>
