@@ -92,6 +92,16 @@
   .hero .hbtn{display:inline-block;margin-top:14px;background:var(--yellow);color:#4a3a05;font-weight:700;
     text-decoration:none;padding:11px 20px;border-radius:999px;font-size:14.5px}
   .hero .hbtn:hover{background:#ffd429}
+  .prices{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:680px){.prices{grid-template-columns:1fr}}
+  .po{border:1px solid var(--line);border-radius:16px;padding:22px;background:var(--card);position:relative}
+  .po.reco{border:2px solid var(--yellow);box-shadow:0 12px 28px rgba(244,194,13,.20)}
+  .po .badge2{position:absolute;top:-11px;left:20px;background:var(--yellow);color:#4a3a05;font-size:10.5px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;padding:4px 11px;border-radius:999px}
+  .po h3{margin:6px 0 8px;font-size:17px;color:var(--navy)}
+  .po .big{font-size:25px;font-weight:800;color:var(--navy);line-height:1.15;margin:2px 0}
+  .po .big small{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-top:1px}
+  .po .sub2{font-size:14px;color:var(--ink);margin-top:7px}
+  .po p{margin:10px 0 0;font-size:13.4px;color:var(--muted)}
 
   .sign{text-align:center;color:var(--muted);font-size:13px;margin-top:30px}
   .sign b{color:var(--ink)}
@@ -121,6 +131,29 @@
   </div>
 
   <div class="wrap">
+
+    <!-- ESTADO ACTUAL -->
+    <section>
+      <h2>Cómo está ahora tu web</h2>
+      <div class="cards">
+        <div class="card">
+          <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="6" y="3" width="12" height="18" rx="2" stroke="#16335f" stroke-width="1.7"/><path d="M10 18h4" stroke="#16335f" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+          <div><h3>Se sale en el móvil</h3><p>Hay que arrastrar la página de lado para leerla, justo por donde entra casi toda tu gente.</p></div>
+        </div>
+        <div class="card">
+          <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="4" y="10" width="16" height="10" rx="2" stroke="#16335f" stroke-width="1.7"/><path d="M8 10V7a4 4 0 018 0v3" stroke="#16335f" stroke-width="1.7"/></svg></span>
+          <div><h3>No se puede reservar online</h3><p>Tienes las fechas y pides señal, pero solo por teléfono o correo. Quien decide de noche no puede cerrar y se enfría.</p></div>
+        </div>
+        <div class="card">
+          <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#16335f" stroke-width="1.7"/><path d="M12 7v5l3 2" stroke="#16335f" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+          <div><h3>Rutas en "Próximamente"</h3><p>Algunas salidas llevan años con ese cartel y enlaces que no abren; el cliente las ve y no puede hacer nada.</p></div>
+        </div>
+        <div class="card">
+          <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 16l-4.9 2.6.9-5.5-4-3.9 5.5-.8z" stroke="#2f8a52" stroke-width="1.5" stroke-linejoin="round"/></svg></span>
+          <div><h3>Lo bueno: estás el primero en Google</h3><p>Tu posición es oro y no se toca. Todo lo de abajo se hace cuidándola.</p></div>
+        </div>
+      </div>
+    </section>
 
     <!-- IDEA -->
     <section>
@@ -230,15 +263,29 @@
       </div>
     </section>
 
-    <!-- INVERSIÓN -->
+    <!-- PRECIO -->
     <section>
-      <h2>La inversión</h2>
-      <div class="invest">
-        <div class="row"><span>Fase 1 — Sistema de reservas a medida</span><span class="v">en el presupuesto</span></div>
-        <div class="row"><span>Fase 2 — Rediseño de la web</span><span class="v">en el presupuesto</span></div>
-        <div class="row"><span>Mantenimiento (opcional, si quieres que te la cuide)</span><span class="v">desde 50 €/mes</span></div>
-        <div class="foot">Te paso el número cerrado de cada fase en un presupuesto aparte, sin sorpresas. Se trabaja
-          con la mitad al empezar y la mitad al entregar. Precios sin IVA. Y la primera propuesta visual no te cuesta nada.</div>
+      <h2>Lo que cuesta</h2>
+      <div class="prices">
+        <div class="po reco">
+          <span class="badge2">La que te recomiendo</span>
+          <h3>Opción A — Todo por una cuota</h3>
+          <div class="big">490 €<small>+ IVA de arranque</small></div>
+          <div class="big">69 €/mes<small>todo incluido, sin comisiones</small></div>
+          <p>Reservas + web nueva + hosting + mantenimiento. Entras con poco y yo me encargo de que esté siempre al día.</p>
+        </div>
+        <div class="po">
+          <h3>Opción B — Pagarlo y que sea tuyo</h3>
+          <div class="sub2">Reservas: <b>690 € + IVA</b></div>
+          <div class="sub2">Rediseño de la web (cuando toque): <b>desde 690 € + IVA</b></div>
+          <div class="sub2">Mantenimiento opcional: <b>50 €/mes</b></div>
+          <p>Pagas una vez y es tuyo para siempre. La mitad al empezar y la mitad a la entrega.</p>
+        </div>
+      </div>
+      <div class="invest" style="margin-top:14px">
+        <div class="foot">Para que lo compares: una plataforma tipo FareHarbor o Regiondo te cobraría un 3–6 % de cada reserva
+          para siempre, o 50–120 €/mes solo por el software de reservas. Aquí tienes las reservas y la web, sin comisiones:
+          lo que reserves es 100 % tuyo. Precios sin IVA.</div>
       </div>
     </section>
 
